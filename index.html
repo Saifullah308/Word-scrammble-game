@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Word Scramble Game | Saifullah-Mansoor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  /* Import Google font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body{
+  display: flex;
+  padding: 0 10px;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #5372F0, #8a2be2);
+  color: #fff;
+}
+.container{
+  width: 500px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.container h2{
+  font-size: 25px;
+  font-weight: 600;
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.1);
+  color: #333;
+  text-align: center;
+}
+.container .content{
+  margin: 25px 25px 35px;
+}
+.content .word{
+  user-select: none;
+  font-size: 38px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 24px;
+  margin-right: -24px;
+  word-break: break-all;
+  text-transform: uppercase;
+  color: #5372F0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+.content .details{
+  margin: 25px 0;
+  padding: 15px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.details p{
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #555;
+}
+.details p b{
+  font-weight: 600;
+  color: #333;
+}
+.content input{
+  width: 100%;
+  height: 60px;
+  outline: none;
+  padding: 0 20px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 2px solid #bfbfbf;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.9);
+}
+.content input:focus{
+  border-color: #5372F0;
+  box-shadow: 0 5px 15px rgba(83, 114, 240, 0.2);
+  transform: translateY(-2px);
+}
+.content input::placeholder{
+  color: #aaa;
+}
+.content .buttons{
+  display: flex;
+  margin-top: 25px;
+  justify-content: space-between;
+  gap: 15px;
+}
+.buttons button{
+  border: none;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 15px 0;
+  font-size: 17px;
+  border-radius: 8px;
+  width: 100%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.buttons button i {
+  font-size: 20px;
+}
+.buttons button:active{
+  transform: scale(0.97);
+}
+.buttons .refresh-word{
+  background: linear-gradient(135deg, #6C757D, #495057);
+}
+.buttons .refresh-word:hover{
+  background: linear-gradient(135deg, #5f666d, #3a4046);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.buttons .check-word{
+  background: linear-gradient(135deg, #5372F0, #3a56d1);
+}
+.buttons .check-word:hover{
+  background: linear-gradient(135deg, #2c52ed, #1a3bbf);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(83, 114, 240, 0.3);
+}
+
+/* Custom Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+}
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  position: relative;
+  transform: scale(0.9);
+  animation: zoomIn 0.3s forwards;
+}
+.modal h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+}
+.modal p {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 20px;
+}
+.modal button {
+  background: #5372F0;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+.modal button:hover {
+  background: #3a56d1;
+  transform: translateY(-2px);
+}
+.success .modal-content {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: white;
+}
+.success h2, .success p {
+  color: white;
+}
+.success button {
+  background: white;
+  color: #2E7D32;
+}
+.error .modal-content {
+  background: linear-gradient(135deg, #F44336, #C62828);
+  color: white;
+}
+.error h2, .error p {
+  color: white;
+}
+.error button {
+  background: white;
+  color: #C62828;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: #f00;
+  opacity: 0;
+  z-index: 999;
+}
+
+/* Time Progress Bar */
+.time-progress {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+.time-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #5372F0, #8a2be2);
+  width: 100%;
+  transition: width 1s linear;
+}
+
+/* Responsive */
+@media screen and (max-width: 530px) {
+  .container {
+    width: 100%;
+  }
+  .container h2{
+    font-size: 22px;
+    padding: 15px 20px;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  .content .word{
+    font-size: 30px;
+    letter-spacing: 18px;
+    margin-right: -18px;
+  }
+  .container .content{
+    margin: 20px 15px 25px;
+  }
+  .details p{
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .content input{
+    height: 55px;
+    font-size: 17px;
+  }
+  .buttons button{
+    padding: 14px 0;
+    font-size: 16px;
+  }
+  .buttons {
+    flex-direction: column;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* Score Display */
+.score-display {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: rgba(255,255,255,0.9);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  color: #5372F0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+</style>
+  </head>
+  <body>
+    <div class="score-display">Score: <span id="score">0</span></div>
+    <div class="container">
+        <h2>Word Scramble Game <i class="fas fa-random"></i></h2>
+        <div class="content">
+            <p class="word"></p>
+            <div class="details">
+                <p class="hint">Hint: <span></span></p>
+                <p class="time">Time Left: <span><b>30</b>s</span></p>
+                <div class="time-progress">
+                  <div class="time-progress-bar"></div>
+                </div>
+            </div>
+            <input type="text" spellcheck="false" placeholder="Enter the correct word...">
+            <div class="buttons">
+                <button class="refresh-word"><i class="fas fa-sync-alt"></i> New Word</button>
+                <button class="check-word"><i class="fas fa-check"></i> Check</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for messages -->
+    <div id="resultModal" class="modal">
+      <div class="modal-content">
+        <h2 id="modalTitle">Result</h2>
+        <p id="modalMessage">Message goes here</p>
+        <button id="modalButton">Continue</button>
+      </div>
+    </div>
+    <script>
+      const words = [
+        { word: "javascript", hint: "A programming language used for web development" },
+        { word: "elephant", hint: "The largest land animal" },
+        { word: "guitar", hint: "A musical instrument with strings" },
+        { word: "rainbow", hint: "Colorful arc in the sky after rain" },
+        { word: "planet", hint: "Earth is one of these in the solar system" },
+        { word: "diamond", hint: "A precious gem, very hard" },
+        { word: "calendar", hint: "Shows days, weeks, months" },
+        { word: "notebook", hint: "Used by students for notes" },
+        { word: "penguin", hint: "A bird that can't fly, lives in cold places" },
+        { word: "sunflower", hint: "A large yellow flower that follows the sun" },
+      ];
+      
+      const wordText = document.querySelector(".word");
+      const hintText = document.querySelector(".hint span");
+      const timeText = document.querySelector(".time span b");
+      const inputField = document.querySelector("input");
+      const refreshBtn = document.querySelector(".refresh-word");
+      const checkBtn = document.querySelector(".check-word");
+      const modal = document.getElementById("resultModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalMessage = document.getElementById("modalMessage");
+      const modalButton = document.getElementById("modalButton");
+      const progressBar = document.querySelector(".time-progress-bar");
+      const scoreDisplay = document.getElementById("score");
+      
+      let correctWord, timer, timeLeft = 30, score = 0;
+      
+      function showModal(success, message) {
+        modal.className = "modal " + (success ? "success" : "error");
+        modalTitle.textContent = success ? "Well Done! 🎉" : "Oops! 😢";
+        modalMessage.textContent = message;
+        modal.style.display = "flex";
+      }
+      
+      modalButton.onclick = () => {
+        modal.style.display = "none";
+        startGame();
+      };
+      
+      function resetTimer() {
+        clearInterval(timer);
+        timeLeft = 30;
+        timeText.textContent = timeLeft;
+        progressBar.style.width = "100%";
+      
+        timer = setInterval(() => {
+          timeLeft--;
+          timeText.textContent = timeLeft;
+          progressBar.style.width = `${(timeLeft / 30) * 100}%`;
+      
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            showModal(false, `Time's up! The correct word was "${correctWord.toUpperCase()}"`);
+          }
+        }, 1000);
+      }
+      
+      function scrambleWord(word) {
+        return word.split("").sort(() => Math.random() - 0.5).join("");
+      }
+      
+      function startGame() {
+        const randomObj = words[Math.floor(Math.random() * words.length)];
+        correctWord = randomObj.word.toLowerCase();
+        let scrambled = scrambleWord(correctWord);
+      
+        // Ensure scrambled word is not same as original
+        while (scrambled === correctWord) {
+          scrambled = scrambleWord(correctWord);
+        }
+      
+        wordText.textContent = scrambled;
+        hintText.textContent = randomObj.hint;
+        inputField.value = "";
+        inputField.focus();
+        resetTimer();
+      }
+      
+      refreshBtn.addEventListener("click", startGame);
+      
+      checkBtn.addEventListener("click", () => {
+        let userWord = inputField.value.toLowerCase().trim();
+        if (!userWord) return;
+      
+        if (userWord === correctWord) {
+          score += 10;
+          scoreDisplay.textContent = score;
+          showModal(true, `"${correctWord.toUpperCase()}" is correct! +10 points`);
+          clearInterval(timer);
+        } else {
+          showModal(false, `"${userWord.toUpperCase()}" is incorrect. Try again!`);
+        }
+      });
+      
+      window.onload = startGame;
+      </script>      
+  </body>
+</html>
